@@ -1,35 +1,31 @@
-{{ $data := .Site.Data.preise_glaeser }}
-<div class="preisliste-wrapper">
-<table class="preistabelle">
+{{ $data := hugo.Data.preise_glaeser }}
+
+{{ range $glastyp := $data.glastypen }}
+<h2 id="{{ $glastyp.id }}">{{ $glastyp.label }}</h2>
+
+<table>
 <thead>
 <tr>
-<th scope="col" class="preistabelle__ecke">Glastyp</th>
-{{ range $data.preisgruppen }}
-<th scope="col">{{ .label }}</th>
-{{ end }}
+<th scope="col">Preisgruppe</th>
+<th scope="col">Hersteller</th>
+<th scope="col">Produkt</th>
+<th scope="col">Preis</th>
 </tr>
 </thead>
 <tbody>
-{{ range $glastyp := $data.glastypen }}
-<tr>
-<th scope="row" data-label="Glastyp">{{ $glastyp.label }}</th>
-{{ range $gruppe := $data.preisgruppen }}
+{{ range $gruppe := $glastyp.preisgruppen }}
 {{ $treffer := where $data.glaeser "glastyp" $glastyp.id }}
 {{ $treffer = where $treffer "preisgruppe" $gruppe.id }}
-<td data-label="{{ $gruppe.label }}">
 {{ range $treffer }}
-<div class="glas-eintrag">
-<span class="glas-name">{{ .name }}</span>
-<span class="glas-preis">{{ .preis }} €</span>
-</div>
-{{ else }}
-<span class="glas-eintrag glas-eintrag--leer">–</span>
-{{ end }}
-</td>
-{{ end }}
+<tr>
+<td>{{ $gruppe.label }}</td>
+<td>{{ .hersteller }}</td>
+<td>{{ .name }}</td>
+<td>{{ .preis }}</td>
 </tr>
+{{ end }}
 {{ end }}
 </tbody>
 </table>
-</div>
+{{ end }}
  
