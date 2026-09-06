@@ -1,76 +1,63 @@
-.preisliste-wrapper {
---farbe-dunkel: #2c3e50;
---farbe-rahmen: #e0ddd5;
---farbe-text-schwach: #6b7280;
---farbe-leer: #b7b2a6;
-max-width: 100%;
-overflow-x: auto;
+/* ============================================
+ERGÄNZUNG ZU PICO CSS
+Diese Datei enthält nur das, was Pico von sich
+aus nicht kann - alles andere (Typografie,
+Abstände, Grundtabellen, Nav-Optik) kommt aus
+pico.classless.min.css und wird hier nicht
+angefasst.
+============================================ */
+
+/* Sanftes Scrollen zu den Sprungmarken auf der
+Glaspreise-Seite (#gleitsicht, #office, ...) */
+html {
+scroll-behavior: smooth;
 }
 
-.preistabelle {
-width: 100%;
-border-collapse: collapse;
-font-size: 0.95rem;
+/* Nav mit mehreren Einträgen soll auf dem Handy
+umbrechen statt sich zu quetschen */
+nav {
+flex-wrap: wrap;
+row-gap: 0.5rem;
 }
-
-.preistabelle th,
-.preistabelle td {
-padding: 0.75rem 1rem;
-border-bottom: 1px solid var(--farbe-rahmen);
-text-align: left;
-vertical-align: top;
-}
-
-.preistabelle thead th {
-font-weight: 600;
-color: var(--farbe-dunkel);
-border-bottom: 2px solid var(--farbe-dunkel);
-}
-
-.glas-eintrag {
-display: flex;
+@media (max-width: 600px) {
+nav {
 flex-direction: column;
-gap: 0.15rem;
-margin-bottom: 0.5rem;
+align-items: flex-start;
 }
-.glas-eintrag:last-child { margin-bottom: 0; 
-                            font-size: 0.7rem;            
 }
 
-.glas-name { font-weight: 600; }
-.glas-preis { color: var(--farbe-text-schwach); 
-              font-variant-numeric: tabular-nums;
-              font-size:1.1rem;
-              font-weight: 800;
+/* Kontaktlinsen-Karten nebeneinander anzeigen.
+Pico stapelt <article>-Elemente sonst immer
+volle Breite untereinander. */
+section:has(article) {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+gap: 1.25rem;
 }
-.glas-eintrag--leer { color: var(--farbe-leer); }
+section:has(article) article {
+margin-bottom: 0;
+}
 
-/* Handy + iPad-Hochformat: Tabelle wird zu Karten */
-@media (max-width: 900px) {
-.preistabelle thead { display: none; }
-.preistabelle, .preistabelle tbody, .preistabelle tr,
-.preistabelle td, .preistabelle th {
-display: block;
-width: 100%;
+/* Abstand zwischen den drei Glastyp-Abschnitten
+(Gleitsicht / Office / Einstärken) auf der
+Glaspreise-Seite */
+h2 {
+margin-top: 2rem;
 }
-.preistabelle tr {
-margin-bottom: 1.25rem;
-border: 1px solid var(--farbe-rahmen);
-border-radius: 6px;
-overflow: hidden;
+
+/* Einheitliche Spaltenbreiten für alle drei
+Glaspreis-Tabellen (class="glaspreise" im
+Partial glaeser-preisliste.html).
+Ohne das würde jede Tabelle ihre Spalten nach
+ihrem EIGENEN Inhalt berechnen - bei kürzeren
+Preisgruppen-Namen (z.B. "Einstärken": Kids/RX)
+würden die Tabellen dann optisch gegeneinander
+verrutschen. */
+.glaspreise {
+table-layout: fixed;
 }
-.preistabelle th[scope="row"] {
-background: var(--farbe-dunkel);
-color: #fff;
-font-size: 1.05rem;
-padding: 0.85rem 1rem;
-}
-.preistabelle td::before {
-content: attr(data-label) ":";
-display: block;
-font-size: 0.8rem;
-color: var(--farbe-text-schwach);
-margin-bottom: 0.2rem;
-}
-}
+.glaspreise :is(th, td):nth-child(1) { width: 20%; }
+.glaspreise :is(th, td):nth-child(2) { width: 12%; }
+.glaspreise :is(th, td):nth-child(3) { width: 54%; }
+.glaspreise :is(th, td):nth-child(4) { width: 14%; text-align: right; }
  

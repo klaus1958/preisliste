@@ -1,35 +1,57 @@
+{{/* Lädt die komplette Datenstruktur aus data/preise_glaeser.yaml
+einmal in eine Variable, damit wir nicht bei jedem Zugriff
+den vollen Pfad ".Site.Data.preise_glaeser" wiederholen müssen */}}
 {{ $data := .Site.Data.preise_glaeser }}
-<div class="preisliste-wrapper">
-<table class="preistabelle">
+
+{{/* Äußere Schleife: einmal pro Glastyp (Gleitsicht, Office, Einstärken).
+Jeder Glastyp bekommt seine eigene Überschrift + eigene Tabelle,
+da die Preisgruppen je nach Glastyp unterschiedlich sind. */}}
+{{ range $glastyp := $data.glastypen }}
+
+{{/* id="{{ $glastyp.id }}" ist die Sprungmarke, auf die die
+Navigation oben auf der Seite verlinkt (#gleitsicht, #office, ...) */}}
+<h2 id="{{ $glastyp.id }}">{{ $glastyp.label }}</h2>
+
+{{/* class="glaspreise" sorgt dafür, dass die CSS-Regel für die
+festen Spaltenbreiten nur HIER greift, nicht bei anderen
+Tabellen wie der Reparaturliste */}}
+<table class="glaspreise">
 <thead>
 <tr>
-<th scope="col" class="preistabelle__ecke">Glastyp</th>
-{{ range $data.preisgruppen }}
-<th scope="col">{{ .label }}</th>
-{{ end }}
+<th scope="col">Preisgruppe</th>
+<th scope="col">Hersteller</th>
+<th scope="col">Produkt</th>
+<th scope="col">Preis</th>
 </tr>
 </thead>
 <tbody>
-{{ range $glastyp := $data.glastypen }}
-<tr>
-<th scope="row" data-label="Glastyp">{{ $glastyp.label }}</th>
-{{ range $gruppe := $data.preisgruppen }}
+{{/* Innere Schleife: einmal pro Preisgruppe DIESES Glastyps
+(z.B. bei Office nur 4 statt 5 Durchläufe) */}}
+{{ range $gruppe := $glastyp.preisgruppen }}
+
+{{/* Aus der kompletten glaeser-Liste zuerst alle mit
+passendem Glastyp filtern ... */}}
 {{ $treffer := where $data.glaeser "glastyp" $glastyp.id }}
+{{/* ... und davon nochmal auf die passende Preisgruppe
+eingrenzen. Am Ende bleibt normalerweise genau 1
+Glas übrig (kann aber auch 0 sein, falls für diese
+Kombination noch kein Produkt hinterlegt ist). */}}
 {{ $treffer = where $treffer "preisgruppe" $gruppe.id }}
-<td data-label="{{ $gruppe.label }}">
+
+{{/* range über $treffer erzeugt automatisch KEINE Zeile,
+falls $treffer leer ist - kein Extra-Check nötig */}}
 {{ range $treffer }}
-<div class="glas-eintrag">
-<span class="glas-name">{{ .name }}</span>
-<span class="glas-preis">{{ .preis }} €</span>
-</div>
-{{ else }}
-<span class="glas-eintrag glas-eintrag--leer">–</span>
-{{ end }}
-</td>
-{{ end }}
+<tr>
+<td>{{ $gruppe.label }}</td>
+<td>{{ .hersteller }}</td>
+<td>{{ .name }}</td>
+<td>{{ .preis }}</td>
 </tr>
+{{ end }}
+
 {{ end }}
 </tbody>
 </table>
-</div>
+
+{{ end }}
  
