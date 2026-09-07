@@ -7,6 +7,20 @@ pico.classless.min.css und wird hier nicht
 angefasst.
 ============================================ */
 
+/* Pico begrenzt <header>/<main>/<footer> stufenweise je nach
+Bildschirmbreite (gedacht für gut lesbare Textzeilen bei Blogs).
+Für unsere Tabellen wollen wir aber möglichst viel Breite nutzen,
+v.a. im iPhone-Querformat, wo Picos Zwischenstufe sonst unnötig
+viel Rand lässt. Diese eine Regel überschreibt alle Picos
+Bildschirmbreiten-Stufen einheitlich. */
+body > header,
+body > main,
+body > footer {
+max-width: 1100px;
+padding-left: 0.6rem;
+padding-right: 0.6rem;
+}
+
 /* Sanftes Scrollen zu den Sprungmarken auf der
 Glaspreise-Seite (#gleitsicht, #office, ...) */
 html {
@@ -53,11 +67,17 @@ ihrem EIGENEN Inhalt berechnen - bei kürzeren
 Preisgruppen-Namen (z.B. "Einstärken": Kids/RX)
 würden die Tabellen dann optisch gegeneinander
 verrutschen. */
-.glaspreise {
-table-layout: fixed;
+.glaspreise-wrapper {
+  overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* für iOS */
 }
+.glaspreise {
+ table-layout: fixed;
+  min-width: 640px; /* Mindestbreite der Tabelle, damit die Spalten nicht zu schmal werden */
+} 
 .glaspreise :is(th, td):nth-child(1) { width: 20%; }
-.glaspreise :is(th, td):nth-child(2) { width: 12%; }
-.glaspreise :is(th, td):nth-child(3) { width: 54%; }
-.glaspreise :is(th, td):nth-child(4) { width: 14%; text-align: right; }
+.glaspreise :is(th, td):nth-child(2) { width: 19%; }
+.glaspreise :is(th, td):nth-child(3) { width: 44%; }
+.glaspreise :is(th, td):nth-child(4) { width: 19%; text-align: right; }
  
+   
