@@ -80,4 +80,23 @@ verrutschen. */
 .glaspreise :is(th, td):nth-child(3) { width: 44%; }
 .glaspreise :is(th, td):nth-child(4) { width: 19%; text-align: right; }
  
-   
+.linsenpreise-wrapper {
+overflow-x: auto;
+}
+.linsenpreise {
+min-width: 600px;
+}
+/* Ab der 4. Spalte (also allen Preis-Spalten, egal wie viele es
+sind) rechtsbündig ausrichten - funktioniert unabhängig davon,
+ob es 1 oder 5 Preisspalten sind */
+.linsenpreise :is(th, td):nth-child(n+4) {
+text-align: right;
+}
+ 
+  /* Jede zweite Tabellenzeile leicht grau hinterlegen - erleichtert
+das zeilenweise Lesen in allen Preislisten-Tabellen */
+tbody tr:nth-child(even) td,
+tbody tr:nth-child(even) th {
+/*background: var(--pico-table-row-stripped-background-color);*/
+background: color-mix(in srgb, var(--pico-color) 8%, transparent);
+} 

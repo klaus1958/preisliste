@@ -1,0 +1,66 @@
+{{ $data := .Site.Data.preise_kontaktlinsen_abo }}
+
+{{ range $linsentyp := $data.linsentypen }}
+<h2 id="{{ $linsentyp.id }}">{{ $linsentyp.label }}</h2>
+
+{{ range $tarif := $data.tarife }}
+<h3>{{ $tarif.label }}</h3>
+
+{{/* Leistungskatalog als aufklappbarer Reminder, nur die
+Punkte, die für DIESEN Tarif gelten (siehe tarife-Feld
+je Leistung oben in der YAML) */}}
+<details>
+<summary>mehr</summary>
+{{ range $gruppe := $data.gruppen }}
+{{ $treffer := false }}
+{{ range $data.leistungen }}
+{{ if and (eq .gruppe $gruppe) (in .tarife $tarif.id) }}
+{{ $treffer = true }}
+{{ end }}
+{{ end }}
+{{ if $treffer }}
+<p><strong>{{ $gruppe }}</strong></p>
+<ul>
+{{ range $data.leistungen }}
+{{ if and (eq .gruppe $gruppe) (in .tarife $tarif.id) }}
+<li>{{ .text }}</li>
+{{ end }}
+{{ end }}
+</ul>
+{{ end }}
+{{ end }}
+</details>
+
+{{ $zeilen := where $data.linsen "linsentyp" $linsentyp.id }}
+{{ $zeilen = where $zeilen "tarif" $tarif.id }}
+
+<div class="linsenpreise-wrapper">
+<table class="linsenpreise">
+<thead>
+<tr>
+<th scope="col">Kategorie</th>
+<th scope="col">Produkt</th>
+<th scope="col">Art</th>
+{{ range $linsentyp.spalten }}
+<th scope="col">{{ . }}</th>
+{{ end }}
+</tr>
+</thead>
+<tbody>
+{{ range $zeilen }}
+<tr>
+<td>{{ .kategorie }}</td>
+<td>{{ .produkt }}</td>
+<td>{{ .art }}</td>
+{{ range .preise }}
+<td>{{ . }}</td>
+{{ end }}
+</tr>
+{{ end }}
+</tbody>
+</table>
+</div>
+
+{{ end }}
+{{ end }}
+ 
