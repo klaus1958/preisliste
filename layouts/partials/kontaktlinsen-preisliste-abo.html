@@ -1,23 +1,31 @@
+{{/* Lädt die komplette Datenstruktur aus data/preise_kontaktlinsen.yaml
+einmal in eine Variable, spart uns den langen Pfad bei jedem Zugriff */}}
 {{ $data := .Site.Data.preise_kontaktlinsen_abo }}
 
+{{/* Äußere Schleife: einmal pro Linsentyp (Tageslinsen, Monatslinsen) */}}
 {{ range $linsentyp := $data.linsentypen }}
 <h2 id="{{ $linsentyp.id }}">{{ $linsentyp.label }}</h2>
 
+{{/* Mittlere Schleife: einmal pro Tarif (Service, Paket) -
+unabhängig vom Linsentyp, gilt für beide gleichermaßen */}}
 {{ range $tarif := $data.tarife }}
 <h3>{{ $tarif.label }}</h3>
 
 {{/* Leistungskatalog als aufklappbarer Reminder, nur die
 Punkte, die für DIESEN Tarif gelten (siehe tarife-Feld
-je Leistung oben in der YAML) */}}
+je Leistung in der YAML) */}}
 <details>
 <summary>mehr</summary>
 {{ range $gruppe := $data.gruppen }}
+{{/* Erst prüfen: gibt's in dieser Gruppe (z.B. "gesund")
+überhaupt mindestens eine Leistung für diesen Tarif? */}}
 {{ $treffer := false }}
 {{ range $data.leistungen }}
 {{ if and (eq .gruppe $gruppe) (in .tarife $tarif.id) }}
 {{ $treffer = true }}
 {{ end }}
 {{ end }}
+{{/* Nur falls ja: Überschrift + Liste tatsächlich ausgeben */}}
 {{ if $treffer }}
 <p><strong>{{ $gruppe }}</strong></p>
 <ul>
@@ -31,8 +39,42 @@ je Leistung oben in der YAML) */}}
 {{ end }}
 </details>
 
+{{/* Aus der kompletten linsen-Liste nur die Zeilen behalten,
+die zu diesem Linsentyp UND diesem Tarif passen */}}
 {{ $zeilen := where $data.linsen "linsentyp" $linsentyp.id }}
 {{ $zeilen = where $zeilen "tarif" $tarif.id }}
+
+{{/* Ein Accordion pro Art (sph/sph, sph/tor, tor/tor, multi) */}}
+{{ range $art := $data.arten }}
+{{ $inArt := where $zeilen "art" $art }}
+
+{{/* Manche Kombinationen haben z.B. kein "multi"
+(Superb/Komfort bei Monatslinsen) - dann ist $inArt
+leer, und es entsteht gar kein Accordion dafür */}}
+{{ if $inArt }}
+<details>
+<summary>
+<strong>{{ $art }}</strong>
+<small>
+{{/* Für jede Preisspalte (bei Tageslinsen 5, bei
+Monatslinsen nur 1) die Spanne über alle Produkte
+dieser Art berechnen */}}
+{{ range $i, $spalte := $linsentyp.spalten }}
+{{ $min := 99999.0 }}
+{{ $max := 0.0 }}
+{{ range $inArt }}
+{{ $preis := index .preise $i }}
+{{ if lt $preis $min }}{{ $min = $preis }}{{ end }}
+{{ if gt $preis $max }}{{ $max = $preis }}{{ end }}
+{{ end }}
+{{/* Spaltenname nur anzeigen, wenn es mehrere
+Preisspalten gibt (bei Tageslinsen) - bei
+Monatslinsen (nur 1 Spalte) wäre "Preis pro
+Monat: 20,00-33,00 €" unnötig ausführlich */}}
+{{ if gt (len $linsentyp.spalten) 1 }}{{ $spalte }}: {{ end }}{{ printf "%.2f" $min | replace "." "," }}–{{ printf "%.2f" $max | replace "." "," }} €{{ if lt (add $i 1) (len $linsentyp.spalten) }} · {{ end }}
+{{ end }}
+</small>
+</summary>
 
 <div class="linsenpreise-wrapper">
 <table class="linsenpreise">
@@ -40,27 +82,27 @@ je Leistung oben in der YAML) */}}
 <tr>
 <th scope="col">Kategorie</th>
 <th scope="col">Produkt</th>
-<th scope="col">Art</th>
 {{ range $linsentyp.spalten }}
 <th scope="col">{{ . }}</th>
 {{ end }}
 </tr>
 </thead>
 <tbody>
-{{ range $zeilen }}
+{{ range $inArt }}
 <tr>
 <td>{{ .kategorie }}</td>
 <td>{{ .produkt }}</td>
-<td>{{ .art }}</td>
 {{ range .preise }}
-<td>{{ . }}</td>
+<td>{{ printf "%.2f" . | replace "." "," }} €</td>
 {{ end }}
 </tr>
 {{ end }}
 </tbody>
 </table>
 </div>
+</details>
+{{ end }}
+{{ end }}
 
 {{ end }}
 {{ end }}
- 

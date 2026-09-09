@@ -100,3 +100,14 @@ tbody tr:nth-child(even) th {
 /*background: var(--pico-table-row-stripped-background-color);*/
 background: color-mix(in srgb, var(--pico-color) 8%, transparent);
 } 
+/* Accordions bei den Kontaktlinsen-Kategorien etwas absetzen */
+main details {
+border: 1px solid var(--pico-muted-border-color);
+border-radius: var(--pico-border-radius);
+padding: 0.75rem 1rem;
+margin-bottom: 0.75rem;
+}
+main details summary small {
+color: var(--pico-muted-color);
+margin-left: 0.5rem;
+}
