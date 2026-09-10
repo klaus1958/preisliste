@@ -44,6 +44,23 @@ die zu diesem Linsentyp UND diesem Tarif passen */}}
 {{ $zeilen := where $data.linsen "linsentyp" $linsentyp.id }}
 {{ $zeilen = where $zeilen "tarif" $tarif.id }}
 
+{{/* Finde die Spalte "3-4x/Woche (6M)" - das ist der Richtwert für
+die geschlossene Ansicht. Bei Monatslinsen gibt's diese Spalte
+nicht, dann bleibt $referenzIndex bei 0 */}}
+{{ $referenzIndex := 0 }}
+{{ $istBeispielwert := false }}
+{{ range $idx, $spalte := $linsentyp.spalten }}
+{{ if eq $spalte "3-4x/Woche (6M)" }}
+{{ $referenzIndex = $idx }}
+{{ $istBeispielwert = true }}
+{{ end }}
+{{ end }}
+
+{{ if $istBeispielwert }}
+<p><small>Preisbeispiel für 3-4x Tragen pro Woche – Details beim Aufklappen mit allen Modalitäten</small></p>
+{{ end }}
+
+
 {{/* Ein Accordion pro Art (sph/sph, sph/tor, tor/tor, multi) */}}
 {{ range $art := $data.arten }}
 {{ $inArt := where $zeilen "art" $art }}
@@ -53,28 +70,24 @@ die zu diesem Linsentyp UND diesem Tarif passen */}}
 leer, und es entsteht gar kein Accordion dafür */}}
 {{ if $inArt }}
 <details>
+
 <summary>
+<span class="zeile" style="grid-template-columns: 8rem 1fr;">
 <strong>{{ $art }}</strong>
-<small>
-{{/* Für jede Preisspalte (bei Tageslinsen 5, bei
-Monatslinsen nur 1) die Spanne über alle Produkte
-dieser Art berechnen */}}
-{{ range $i, $spalte := $linsentyp.spalten }}
 {{ $min := 99999.0 }}
 {{ $max := 0.0 }}
 {{ range $inArt }}
-{{ $preis := index .preise $i }}
+{{ $preis := index .preise $referenzIndex }}
 {{ if lt $preis $min }}{{ $min = $preis }}{{ end }}
 {{ if gt $preis $max }}{{ $max = $preis }}{{ end }}
 {{ end }}
-{{/* Spaltenname nur anzeigen, wenn es mehrere
-Preisspalten gibt (bei Tageslinsen) - bei
-Monatslinsen (nur 1 Spalte) wäre "Preis pro
-Monat: 20,00-33,00 €" unnötig ausführlich */}}
-{{ if gt (len $linsentyp.spalten) 1 }}{{ $spalte }}: {{ end }}{{ printf "%.2f" $min | replace "." "," }}–{{ printf "%.2f" $max | replace "." "," }} €{{ if lt (add $i 1) (len $linsentyp.spalten) }} · {{ end }}
-{{ end }}
-</small>
+<span class="preisspanne">{{ replace (printf "%.2f" $min) "." "," }}–{{ replace (printf "%.2f" $max) "." "," }} €</span>
+</span>
 </summary>
+ 
+
+
+
 
 <div class="linsenpreise-wrapper">
 <table class="linsenpreise">
@@ -93,7 +106,7 @@ Monat: 20,00-33,00 €" unnötig ausführlich */}}
 <td>{{ .kategorie }}</td>
 <td>{{ .produkt }}</td>
 {{ range .preise }}
-<td>{{ printf "%.2f" . | replace "." "," }} €</td>
+<td>{{ replace (printf "%.2f" .) "." "," }} €</td>
 {{ end }}
 </tr>
 {{ end }}

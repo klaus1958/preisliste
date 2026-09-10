@@ -111,3 +111,34 @@ main details summary small {
 color: var(--pico-muted-color);
 margin-left: 0.5rem;
 }
+
+/* Zusammenfassung im Accordion-Kopf: Name + Preisspannen als
+Grid statt langer Fließtext-Zeile mit "·"-Trennern */
+summary {
+display: flex;
+flex-wrap: wrap;
+align-items: baseline;
+gap: 0.25rem 1.5rem;
+}
+.preisspannen {
+display: flex;
+flex-wrap: wrap;
+gap: 0.4rem 1.25rem;
+}
+.preisspanne {
+display: flex;
+flex-direction: column;
+font-size: 0.85rem;
+white-space: nowrap;
+}
+.preisspanne small {
+color: var(--pico-muted-color);
+font-size: 0.7rem;
+}
+ 
+
+.zeile{
+  display: grid;
+  align-items: baseline;
+  gap: 0.25rem 2.5 rem;
+}
