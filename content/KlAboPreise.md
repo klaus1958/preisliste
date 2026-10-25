@@ -5,4 +5,4 @@ title: 'Kontaktlinsenabo'
 weight: 2
 layout: 'preisliste-kontaktlinsen-abo'
 ---
-KLabopreise
+Kl-Abo-Preise
