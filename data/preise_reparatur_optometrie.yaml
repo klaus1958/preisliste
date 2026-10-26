@@ -1,0 +1,18 @@
+gruppen:
+  - name: "Reparaturen"
+    beschreibung: "Werkstattleistungen und Instandsetzungen"
+    items:
+      - {name: "Fassung richten / anpassen", beschreibung: "Ultraschallreinigung und anatomische Ausrichtung", preis: "15,00 €"}
+      - {name: "Lötung / Ersatzteil", beschreibung: "Instandsetzung von Metallfassungen exkl. Material", preis: "25,00 €"}
+
+  - name: "Optometrieleistungen"
+    beschreibung: "Messungen, Screenings und Augenprüfungen"
+    items:
+      - {name: "Große Augenprüfung", beschreibung: "Refraktion inklusive Augeninnendruckmessung", preis: "49,00 €"}
+      - {name: "Führerschein-Sehtest", beschreibung: "Amtlich anerkannter Sehtest inkl. Bescheinigung", preis: "12,50 €"}
+
+  - name: "Kl-Anpassleistungen"
+    beschreibung: "Kontaktlinsen-Anpassung und Nachkontrollen"
+    items:
+      - {name: "Erst-Anpassung Einstärken", beschreibung: "Inkl. Probelinsen, Handhabungstraining und Nachkontrolle", preis: "89,00 €"}
+      - {name: "Spezial-Anpassung (Mehrstärken)", beschreibung: "Individuelle Anpassung von Gleitsicht-Kontaktlinsen", preis: "129,00 €"}

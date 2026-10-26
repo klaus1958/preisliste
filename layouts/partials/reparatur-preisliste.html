@@ -1,0 +1,49 @@
+{{/* Lädt data/preise_reparatur_optometrie.yaml */}}
+{{ $data := .Site.Data.preise_reparatur_optometrie }}
+
+{{/* Sicherheitscheck: Existiert die Datei und enthält sie Gruppen? */}}
+{{ if and $data $data.gruppen }}
+<div class="reparaturpreise-wrapper">
+    {{ range $gruppe := $data.gruppen }}
+    {{/* Erzeugt die ID für die Sprungmarke vollautomatisch im Kleinformat */}}
+    <section class="reparatur-sektion" id="{{ .name | urlize }}">
+        
+        <h2>{{ .name }}</h2>
+        {{ if .beschreibung }}
+            <p><em>{{ .beschreibung }}</em></p>
+        {{ end }}
+
+        <table class="reparaturpreise">
+            <thead>
+                <tr>
+                    <th scope="col">Art / Leistung</th>
+                    <th scope="col" style="text-align: right;">Preis</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{/* Geht durch die Liste der Items innerhalb dieser Gruppe */}}
+                {{ range .items }}
+                <tr>
+                    <td>
+                        <strong>{{ .name }}</strong>
+                        {{ if .beschreibung }}
+                            <br><small style="color: var(--pico-muted-color);">{{ .beschreibung }}</small>
+                        {{ end }}
+                    </td>
+                    <td style="text-align: right; font-weight: bold; white-space: nowrap;">
+                        {{ .preis }}
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+        
+    </section>
+    {{ end }}
+</div>
+{{ else }}
+    {{/* Falls Hugo die Datei nicht lesen kann, wird dieser dezente Hinweis ausgegeben, statt abzustürzen */}}
+    <p style="color: red; font-weight: bold;">
+        Hinweis: Die Daten in 'data/preise_reparatur_optometrie.yaml' konnten nicht geladen werden oder das Format ist inkorrekt.
+    </p>
+{{ end }}

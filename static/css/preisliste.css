@@ -142,3 +142,27 @@ font-size: 0.7rem;
   align-items: baseline;
   gap: 0.25rem 2.5 rem;
 }
+
+/* Einheitliche Spaltenbreiten für die zweispaltige Reparatur- und Optometriepreisliste */
+.reparaturpreise-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* für iOS */
+    margin-bottom: 2.5rem;
+}
+
+.reparaturpreise {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 500px; /* Verhindert, dass die Tabelle auf kleinen Displays zu stark gequetscht wird */
+}
+
+/* 1. Spalte (Leistung): 85% Breite */
+.reparaturpreise :is(th, td):nth-child(1) { 
+    width: 85%; 
+}
+
+/* 2. Spalte (Preis): 15% Breite und rechtsbündig */
+.reparaturpreise :is(th, td):nth-child(2) { 
+    width: 15%; 
+    text-align: right; 
+}
